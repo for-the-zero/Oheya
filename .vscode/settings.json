@@ -1,0 +1,18 @@
+{
+    "files.associations": {
+        "*.css": "tailwindcss"
+    },
+    "tailwindCSS.includeLanguages": {
+        "vue": "html"
+    },
+    "tailwindCSS.experimental.configFile": "src/style.css",
+    "tailwindCSS.experimental.classRegex": [
+        ["class:=\"([^\"]*)\"", "[\"`]([^\"`]*)[\"`]"]
+    ],
+    "typescript.preferences.autoImportFileExcludePatterns": [
+        "primevue/*"
+    ],
+    "typescript.tsdk": "node_modules\\typescript\\lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "vue.server.hybridMode": true
+}

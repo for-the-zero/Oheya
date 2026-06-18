@@ -1,9 +1,5 @@
 /// <reference types="vite/client" />
-declare module '*.vue' {
-    import type { DefineComponent } from 'vue';
-    const component: DefineComponent<{}, {}, any>;
-    export default component;
-};
+/// <reference types="vue/compiler-sfc" />
 
 interface status{
     isGenerating: boolean;
@@ -25,19 +21,20 @@ interface config{
     baseUrl: string;
     key: string;
     model: string;
+    temperature: number;
     prompts: string[];
     activePrompt: number;
-    search: 'exa' | 'uapi' | 'tavily';
+    search: 'exa' | 'uapi' | 'tavily' | 'querit';
     content: 'exa' | 'tavily' | 'md.new' | 'defuddle';
     toolsKeys: {
         exa: string;
         uapi: string;
-        jina: string;
+        querit: string;
     };
 };
 
 interface result{
-    items?: {
+    targets?: {
         name?: string;
         category?: string;
         brief?: string;

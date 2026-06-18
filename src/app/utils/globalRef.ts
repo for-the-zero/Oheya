@@ -21,12 +21,12 @@ export const useGlobalRefStore = defineStore('globalRef', () => {
         model: '',
         prompts: [pmtZh, pmtEn],
         activePrompt: 0,
-        search: 'exa',
-        content: 'exa',
+        search: 'uapi',
+        content: 'md.new',
         toolsKeys: {
             exa: '',
             uapi: '',
-            jina: ''
+            querit: ''
         }
     });
     watch(config, (v) => localStorage.setItem('oheya', JSON.stringify(v)), { deep: true });

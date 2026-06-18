@@ -1,1 +1,6 @@
+@import 'https://fonts.googleapis.com/css2?family=Google+Sans&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap';
 @import "tailwindcss";
+body{
+    font-family: 'Google Sans','Noto Sans SC';
+}

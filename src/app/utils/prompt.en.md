@@ -12,6 +12,7 @@ You rely solely on the search results obtained through tool calls, not on your o
 ## Output Example / Data Structure
 (Thinking, analysis, structuring, ...)
 <--YAML START-->
+targets:
   - name: "Entity Name"
     category: "Category"
     confidence: 75 # Confidence: 0-100
@@ -43,9 +44,9 @@ You rely solely on the search results obtained through tool calls, not on your o
         cite:
           - 1
       ...
-    classic: # Traditional search results section
-      - 0
-      ...
+  ...
+classic: # Traditional search results section
+  - 0
   ...
 # Begin
 Next, you will receive the user's keywords. Start your task based on them.
