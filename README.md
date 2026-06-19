@@ -1,6 +1,6 @@
 # Oheya
 
-~~<ruby>Oheya<rt>おへや</rt></ruby>-<ruby>a<rt>あ</rt></ruby>-<ruby>hai<rt>はい</rt></ruby>-**Magi**~~
+~~<ruby>Oheya<rt>おへや</rt></ruby>-啊哈<span style="font-size: 5px;">咿</span>-**Magi**~~
 
 ## 其它 / Other
 

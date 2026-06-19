@@ -1,12 +1,15 @@
 /// <reference types="vite/client" />
 /// <reference types="vue/compiler-sfc" />
 
-interface status{
+interface aistatus{
     isGenerating: boolean;
     isGenResult: boolean;
     response: string;
     resYaml: string;
-    lastToken: string;
+    last: {
+        type: 'token' | 'tool';
+        content: string;
+    } | null;
     toolResults: {
         title: string;
         summary: string;
@@ -16,6 +19,7 @@ interface status{
 };
 interface config{
     lang: 'zh' | 'en';
+    vibration: boolean;
     corsMode: boolean;
     corsPrefix: string;
     baseUrl: string;
@@ -55,6 +59,7 @@ interface result{
             confidence?: number;
             cite?: number[];
         }[];
+        charts?: result_chart[];
         related?: {
             name?: string;
             confidence?: number;
@@ -62,4 +67,19 @@ interface result{
         }[];
     }[];
     classic?: number[];
+};
+type result_chart = {
+    type?: 'bar' | 'line';
+    title?: string;
+    labels?: string[];
+    datasets?: {
+        label?: string;
+        data?: number[];
+        tension?: number;
+    }[];
+} | {
+    type?: 'pie';
+    title?: string;
+    labels?: string[];
+    data?: number[];
 };

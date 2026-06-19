@@ -2,9 +2,12 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './app/App.vue';
 import PrimeVue from 'primevue/config';
+import Tooltip from 'primevue/tooltip';
+
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
 import 'primeicons/primeicons.css';
+
 import './style.css';
 
 const Noir = definePreset(Aura, {
@@ -42,5 +45,6 @@ app.use(PrimeVue, {
         }
     }
 });
+app.directive('tooltip', Tooltip);
 
 app.mount('#app');
