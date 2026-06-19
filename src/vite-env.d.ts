@@ -19,7 +19,7 @@ interface aistatus{
 };
 interface config{
     lang: 'zh' | 'en';
-    vibration: boolean;
+    vibration: number;
     corsMode: boolean;
     corsPrefix: string;
     baseUrl: string;

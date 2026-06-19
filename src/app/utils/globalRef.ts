@@ -5,9 +5,9 @@ import pmtEn from './prompt.en.md?raw';
 
 export const defaultConfig = {
     lang: navigator.language.includes('zh') ? 'zh' : 'en',
-    vibration: true,
+    vibration: 50,
     corsMode: false,
-    corsPrefix: '',
+    corsPrefix: 'https://cors.forthezero.dpdns.org/',
     baseUrl: '',
     key: '',
     model: '',
