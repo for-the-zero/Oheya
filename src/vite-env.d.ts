@@ -26,13 +26,13 @@ interface config{
     key: string;
     model: string;
     temperature: number;
-    prompts: string[];
-    activePrompt: number;
+    prompt: string;
     search: 'exa' | 'uapi' | 'tavily' | 'querit';
-    content: 'exa' | 'tavily' | 'md.new' | 'defuddle';
+    content: 'exa' | 'tavily' | 'md.new';
     toolsKeys: {
         exa: string;
         uapi: string;
+        tavily: string;
         querit: string;
     };
 };

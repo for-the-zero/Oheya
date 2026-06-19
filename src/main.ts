@@ -3,6 +3,8 @@ import { createPinia } from 'pinia';
 import App from './app/App.vue';
 import PrimeVue from 'primevue/config';
 import Tooltip from 'primevue/tooltip';
+import ToastService from 'primevue/toastservice';
+import Toast from 'primevue/toast';
 
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
@@ -46,5 +48,7 @@ app.use(PrimeVue, {
     }
 });
 app.directive('tooltip', Tooltip);
+app.use(ToastService);
+app.component('Toast', Toast);
 
 app.mount('#app');

@@ -11,13 +11,14 @@ export const defaultConfig = {
     baseUrl: '',
     key: '',
     model: '',
-    prompts: [pmtZh, pmtEn],
-    activePrompt: 0,
+    temperature: 0,
+    prompt: pmtEn,
     search: 'uapi',
     content: 'md.new',
     toolsKeys: {
         exa: '',
         uapi: '',
+        tavily: '',
         querit: ''
     }
 };

@@ -15,4 +15,5 @@
     <div class="flex flex-col justify-center items-center p-6 gap-3">
         <Title />
     </div>
+    <Toast />
 </template>
