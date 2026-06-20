@@ -67,7 +67,7 @@ targets:
     confidence: 75 # 置信度：0~100
     descriptions:
       - text: "描述文本"
-        confidence: 0.9
+        confidence: 90
         cite: 
           - 0 # 对应id为0的搜索结果
           ……

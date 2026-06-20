@@ -77,7 +77,7 @@
     };
     function save(){
         let need_notice = false;
-        if(!editing_base.value || !editing_model.value || !editing_prompt.value){
+        if(!editing_base.value || !editing_model.value || !editing_prompt.value || !editing_corsp.value){
             toast.add({severity: 'warn', life: 2500, summary: config.value.lang === 'zh' ? '还有没填的东西……' : 'Missing required fields', detail: config.value.lang === 'zh' ? '请检查必填项是否填写完整' : 'Please check required fields', closable: true});
             need_notice = true;
         };
@@ -98,7 +98,7 @@
         toast.add({severity: 'success', life: 2500, summary: config.value.lang === 'zh' ? '保存成功' : 'Saved', closable: true, ...notice});
     };
     function restore(){ editing_lang.value = config.value.lang; editing_vibra.value = config.value.vibration; editing_corsm.value = config.value.corsMode; editing_corsp.value = config.value.corsPrefix; editing_base.value = config.value.baseUrl; editing_key.value = config.value.key; editing_model.value = config.value.model; editing_temp.value = config.value.temperature; editing_prompt.value = config.value.prompt; editing_search.value = config.value.search; editing_content.value = config.value.content; editing_ta_exa.value = config.value.toolsKeys.exa; editing_ta_uapi.value = config.value.toolsKeys.uapi; editing_ta_tavily.value = config.value.toolsKeys.tavily; editing_ta_querit.value = config.value.toolsKeys.querit; };
-    function resetDefault(){ editing_lang.value = defaultConfig.lang; editing_vibra.value = defaultConfig.vibration; editing_corsm.value = defaultConfig.corsMode; editing_corsp.value = defaultConfig.corsPrefix; editing_base.value = defaultConfig.baseUrl; editing_key.value = defaultConfig.key; editing_model.value = defaultConfig.model; editing_temp.value = defaultConfig.temperature; editing_prompt.value = defaultConfig.prompt; editing_search.value = defaultConfig.search || 'uapi'; editing_content.value = defaultConfig.content || 'md.new'; editing_ta_exa.value = defaultConfig.toolsKeys.exa; editing_ta_uapi.value = defaultConfig.toolsKeys.uapi; editing_ta_tavily.value = defaultConfig.toolsKeys.tavily; editing_ta_querit.value = defaultConfig.toolsKeys.querit; };
+    function resetDefault(){ editing_lang.value = defaultConfig.lang as "zh" | "en"; editing_vibra.value = defaultConfig.vibration; editing_corsm.value = defaultConfig.corsMode; editing_corsp.value = defaultConfig.corsPrefix; editing_base.value = defaultConfig.baseUrl; editing_key.value = defaultConfig.key; editing_model.value = defaultConfig.model; editing_temp.value = defaultConfig.temperature; editing_prompt.value = defaultConfig.prompt; editing_search.value = defaultConfig.search as "uapi" | "exa" | "tavily" | "querit" || 'uapi'; editing_content.value = defaultConfig.content as "md.new" | "exa" | "tavily" || 'md.new'; editing_ta_exa.value = defaultConfig.toolsKeys.exa; editing_ta_uapi.value = defaultConfig.toolsKeys.uapi; editing_ta_tavily.value = defaultConfig.toolsKeys.tavily; editing_ta_querit.value = defaultConfig.toolsKeys.querit; };
 </script>
 
 <template>
@@ -131,7 +131,7 @@
                         : 'The most third-party APIs need CORS Proxy to work, and your LLM may also need CORS Proxy, otherwise the request will fail' 
                     }}</p>
                     <FloatLabel>
-                        <InputText v-model="editing_corsp" fluid />
+                        <InputText v-model="editing_corsp" fluid :invalid="!editing_corsp" />
                         <Message size="small" severity="secondary" variant="simple" class="text-xs">{{ config.lang === 'zh' ? 'URL前缀将在请求时添加到目标url前面' : 'URL prefix will be prepended to the target URL upon request' }}</Message>
                     </FloatLabel>
                     <h1 class="text-xl">{{ config.lang === 'zh' ? '应用配置' : 'APP Configs' }}</h1>

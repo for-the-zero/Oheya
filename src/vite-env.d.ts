@@ -4,19 +4,18 @@
 interface aistatus{
     isGenerating: boolean;
     isGenResult: boolean;
-    response: string;
-    resYaml: string;
-    last: {
-        type: 'token' | 'tool';
-        content: string;
-    } | null;
+    isToolCalling: false | 'search' | 'fetch';
+    response?: string;
+    resYaml?: string;
+    resObj?: result;
     toolResults: {
         title: string;
         summary: string;
-        content: string;
+        content?: string | null;
         url: string;
     }[];
 };
+
 interface config{
     lang: 'zh' | 'en';
     vibration: number;

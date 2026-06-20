@@ -27,9 +27,9 @@ export const useGlobalRefStore = defineStore('globalRef', () => {
     const status = ref<aistatus>({
         isGenerating: false,
         isGenResult: false,
+        isToolCalling: false,
         response: '',
         resYaml: '',
-        last: null,
         toolResults: []
     });
     const config = ref<config>(JSON.parse(localStorage.getItem('oheya') || 'null') || defaultConfig);

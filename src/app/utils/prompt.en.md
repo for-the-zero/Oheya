@@ -67,7 +67,7 @@ targets:
     confidence: 75 # confidence score: 0–100
     descriptions:
       - text: "description text"
-        confidence: 0.9
+        confidence: 90
         cite: 
           - 0 # corresponding to search result with id 0
           ……

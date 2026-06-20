@@ -10,6 +10,7 @@
     "@ai-sdk/vue": "^3.0.197",
     "@primeuix/themes": "^2.0.3",
     "@tailwindcss/vite": "^4.0.0",
+    "@vueuse/core": "^14.3.0",
     "ai": "^6.0.197",
     "js-yaml": "^4.2.0",
     "pinia": "^3.0.4",

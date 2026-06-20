@@ -12,7 +12,7 @@ export default defineConfig({
         assetsDir: ''
     },
     plugins: [
-        vue(),
+        vue({vapor: true}),
         tailwindcss(),
         vueDevTools(),
         VitePWA({
