@@ -9,7 +9,19 @@ export default defineConfig({
     base: './',
     build: {
         outDir: '../dist',
-        assetsDir: ''
+        emptyOutDir: true,
+        assetsDir: '',
+        rollupOptions: {
+            onwarn(warning, warn) {
+                if ((warning as { code?: string }).code === 'INVALID_ANNOTATION') return;
+                warn(warning);
+            },
+            output: {
+                entryFileNames: '[name].js',
+                chunkFileNames: '[name].js',
+                assetFileNames: '[name][extname]',
+            },
+        },
     },
     plugins: [
         vue({vapor: true}),

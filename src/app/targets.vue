@@ -6,9 +6,11 @@
     import Divider from 'primevue/divider';
     import Popover from 'primevue/popover';
     import ProgressBar from 'primevue/progressbar';
-    import Fieldset from 'primevue/fieldset';
+    import Fieldset from 'primevue/fieldset';    
+    import Chip from 'primevue/chip';
 
     import ClassicItem from './classic-item.vue';
+    import Chart from './Charts.vue';
 
     const { target, id } = defineProps<{ target: NonNullable<result['targets']>[number], id: string }>();
     import { ref } from 'vue';
@@ -71,7 +73,7 @@
                 </div>
                 <Divider />
 
-                <h1 v-if="target.attributes && target.attributes.length > 0" class="text-xl">{{ config.lang === 'zh' ? '属性与标签' : 'Attr&Tags' }}</h1>
+                <h1 v-if="target.attributes && target.attributes.length > 0" class="text-xl">{{ config.lang === 'zh' ? '属性' : 'Attr' }}</h1>
                 <div v-if="target.attributes && target.attributes.length > 0">
                     <span v-for="attr in target.attributes" class="mr-4 **:data-[pc-section='root']:p-2! cursor-pointer" @click="(e)=>{openPop(e,{cite: attr.cite, confidence: attr.confidence})}">
                         <Fieldset class="inline-block" :pt="{legend: {style: `padding: 2px;border: none;`}, content: {style: `transform: translateY(-5px);color: ${getCfdcColor(attr.confidence)}`}}">
@@ -81,11 +83,37 @@
                             <span class="text-sm font-bold">{{ attr.avalue }}</span>
                         </Fieldset>
                     </span>
-                    
                 </div>
                 <Divider />
 
-                <!-- TODO: -->
+                <h1 v-if="target.tags && target.tags.length > 0" class="text-xl">{{ config.lang === 'zh' ? '标签' : 'Tags' }}</h1>
+                <div v-if="target.tags && target.tags.length > 0">
+                    <div v-for="tag in target.tags" class="inline mr-4 cursor-pointer" @click="(e)=>{openPop(e,{cite: tag.cite, confidence: tag.confidence})}">
+                        <Chip>
+                            <div class="flex flex-row items-center justify-center gap-2">
+                                <span class="rounded-full pi pi-tag p-2" :style="`background-color: ${getCfdcColor(tag.confidence)}`" ></span>
+                                <span class="font-medium" >{{ tag.tag }}</span>
+                            </div>
+                        </Chip>
+                    </div>
+                </div>
+                <Divider />
+
+                <h1 v-if="target.charts && target.charts.length > 0" class="text-xl">{{ config.lang === 'zh' ? '图表' : 'Charts' }}</h1>
+                <Chart v-if="target.charts && target.charts.length > 0" v-for="chart in target.charts" :chart="chart" />
+                <Divider />
+
+                <h1 v-if="target.related && target.related.length > 0" class="text-xl">{{ config.lang === 'zh' ? '相关内容' : 'Related' }}</h1>
+                <div v-if="target.related && target.related.length > 0">
+                    <div v-for="rel in target.related" class="inline mr-4 cursor-pointer" @click="(e)=>{openPop(e,{cite: rel.cite, confidence: rel.confidence})}">
+                        <Chip>
+                            <div class="flex flex-row items-center justify-center gap-2">
+                                <span class="rounded-full pi pi-link p-2" :style="`background-color: ${getCfdcColor(rel.confidence)}`" ></span>
+                                <span class="font-medium" >{{ rel.name }}</span>
+                            </div>
+                        </Chip>
+                    </div>
+                </div>
 
             </div>
 
