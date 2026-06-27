@@ -6,7 +6,9 @@ import vueDevTools from 'vite-plugin-vue-devtools';
 
 export default defineConfig({
     base: './',
-    host: '0.0.0.0',
+    server: {
+        host: '0.0.0.0'
+    },
     build: {
         outDir: 'dist',
         emptyOutDir: true,
@@ -24,7 +26,7 @@ export default defineConfig({
         },
     },
     plugins: [
-        vue({vapor: true}),
+        vue(),
         tailwindcss(),
         vueDevTools(),
         VitePWA({

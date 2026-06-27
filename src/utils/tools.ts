@@ -22,7 +22,7 @@ function showError(name: string, message: string) {
 
 async function apiFetch(url: string, options: RequestInit = {}, skipCors = false) {
     const { corsMode, corsPrefix } = useStore().config;
-    return fetch(!skipCors && corsMode ? `${corsPrefix}${url}` : url, options);
+    return fetch(!skipCors ? `${corsPrefix}${url}` : url, options);
 };
 
 // ---- search providers ----

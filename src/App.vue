@@ -55,7 +55,7 @@
     };
 </script>
 
-<template>
+<template vapor>
     <Settings />
     <div class="flex flex-col justify-center items-center p-6 gap-5 mx-auto w-[90vw] sm:w-[65vw]">
         <Title />
