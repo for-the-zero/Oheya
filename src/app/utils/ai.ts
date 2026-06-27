@@ -1,7 +1,7 @@
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { streamText, isLoopFinished } from 'ai';
 import yaml from 'js-yaml';
-import { getCurrentInstance } from 'vue'
+// import { getCurrentInstance } from 'vue'
 
 import { useGlobalRefStore, getToast } from './globalRef';
 import { searchTool, getFullTextTool } from './tools';
@@ -64,7 +64,7 @@ export async function requestAI(kw: string){
             if(isFinished){
                 status.isGenerating = false;
                 console.log(status);
-                getCurrentInstance()?.proxy?.$forceUpdate();
+                // getCurrentInstance()?.proxy?.$forceUpdate();
                 break;
             };
         };
@@ -113,7 +113,8 @@ function flushParsed(){
     _pendingParsed = null;
 };
 
-const THROTTLE_MS = 150;
+// const THROTTLE_MS = 250;
+const THROTTLE_MS = 100;
 function parseContent(flush = false){
     const { status } = useGlobalRefStore();
     if(!status.response){return;};

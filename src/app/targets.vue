@@ -66,93 +66,69 @@
                 <div class="flex flex-col gap-2">
 
                 <Transition name="float-up" appear>
-                    <div v-if="target.brief" class="flex flex-col gap-2">
+                    <div v-if="target?.brief" class="flex flex-col gap-2">
                         <h1 class="text-xl">{{ config.lang === 'zh' ? '介绍' : 'Introduction' }}</h1>
-                        <p>{{ target.brief }}</p>
+                        <p>{{ target?.brief }}</p>
                     </div>
                 </Transition>
-                <Divider v-if="(target.brief) && ((target.descriptions && target.descriptions.length > 0) || (target.attributes && target.attributes.length > 0) || (target.tags && target.tags.length > 0) || (target.charts && target.charts.length > 0) || (target.related && target.related.length > 0))" />
+                <Divider v-if="target?.brief && (target?.descriptions?.length || target?.attributes?.length || target?.tags?.length || target?.charts?.length || target?.related?.length)" />
 
-                <Transition name="slide-right" appear>
-                    <div v-if="target.descriptions && target.descriptions.length > 0" class="flex flex-col gap-2">
-                        <h1 class="text-xl">{{ config.lang === 'zh' ? '描述' : 'Descriptions' }}</h1>
-                        <span v-for="(desc, i) in target.descriptions" :key="i" class="mr-4 underline underline-offset-3 decoration-2 cursor-pointer" :style="`text-decoration-color: ${getCfdcColor(desc?.confidence ? desc.confidence : undefined)}`" @click="(e)=>{openPop(e,{cite: desc.cite, confidence: desc.confidence})}">" {{ desc.text }} "</span>
-                    </div>
-                </Transition>
+                <TransitionGroup name="slide-right" appear tag="div" class="flex flex-col gap-2" v-if="target?.descriptions?.length">
+                    <h1 key="heading" class="text-xl">{{ config.lang === 'zh' ? '描述' : 'Descriptions' }}</h1>
+                    <span v-for="(desc, i) in target?.descriptions" :key="i" class="mr-4 underline underline-offset-3 decoration-2 cursor-pointer" :style="`text-decoration-color: ${getCfdcColor(desc?.confidence ? desc.confidence : undefined)}`" @click="(e)=>{openPop(e,{cite: desc?.cite, confidence: desc?.confidence})}">" {{ desc?.text }} "</span>
+                </TransitionGroup>
                 <Divider v-if="((target.descriptions && target.descriptions.length > 0)) && ((target.attributes && target.attributes.length > 0) || (target.tags && target.tags.length > 0) || (target.charts && target.charts.length > 0) || (target.related && target.related.length > 0))" />
 
-                <Transition name="slide-right" appear>
-                    <div v-if="target.attributes && target.attributes.length > 0" class="flex flex-col gap-2">
-                        <h1 class="text-xl">{{ config.lang === 'zh' ? '属性' : 'Attr' }}</h1>
-                        <div class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2">
-                            <div v-for="(attr, i) in target.attributes" :key="i" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: attr.cite, confidence: attr.confidence})}">
-                                <Chip v-if="attr">
-                                    <div class="flex flex-row items-center justify-center gap-2">
-                                        <Tag severity="contrast" :value="attr.akey ? attr.akey : ''"></Tag>
-                                        <span class="font-medium" >{{ attr.avalue }}</span>
-                                    </div>
-                                </Chip>
+                <TransitionGroup name="slide-right" appear tag="div" class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2" v-if="target?.attributes?.length">
+                    <h1 key="heading" class="text-xl w-full">{{ config.lang === 'zh' ? '属性' : 'Attr' }}</h1>
+                    <div v-for="(attr, i) in target?.attributes" :key="i" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: attr?.cite, confidence: attr?.confidence})}">
+                        <Chip v-if="attr">
+                            <div class="flex flex-row items-center justify-center gap-2">
+                                <Tag severity="contrast" :value="attr?.akey || ''"></Tag>
+                                <span class="font-medium" >{{ attr?.avalue }}</span>
                             </div>
-                            <!-- <span v-for="attr in target.attributes" class="mr-4 **:data-[pc-section='root']:p-2! cursor-pointer" @click="(e)=>{openPop(e,{cite: attr.cite, confidence: attr.confidence})}">
-                                <Fieldset class="inline-block" :pt="{legend: {style: `padding: 2px;border: none;`}, content: {style: `transform: translateY(-5px);color: ${getCfdcColor(attr.confidence)}`}}">
-                                    <template #legend>
-                                        <span class="text-xs">{{ attr.akey }}</span>
-                                    </template>
-                                    <span class="text-sm font-bold">{{ attr.avalue }}</span>
-                                </Fieldset>
-                            </span> -->
-                        </div>
+                        </Chip>
                     </div>
-                </Transition>
+                </TransitionGroup>
                 <Divider v-if="((target.attributes && target.attributes.length > 0)) && ((target.tags && target.tags.length > 0) || (target.charts && target.charts.length > 0) || (target.related && target.related.length > 0))" />
 
-                <Transition name="slide-right" appear>
-                    <div v-if="target.tags && target.tags.length > 0" class="flex flex-col gap-2">
-                        <h1 class="text-xl">{{ config.lang === 'zh' ? '标签' : 'Tags' }}</h1>
-                        <div class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2">
-                            <div v-for="(tag, i) in target.tags" :key="i" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: tag.cite, confidence: tag.confidence})}">
-                                <Chip>
-                                    <div class="flex flex-row items-center justify-center gap-2">
-                                        <span class="rounded-full pi pi-tag p-2" :style="`background-color: ${getCfdcColor(tag?.confidence ? tag.confidence : undefined)}`" ></span>
-                                        <span class="font-medium" >{{ tag?.tag }}</span>
-                                    </div>
-                                </Chip>
+                <TransitionGroup name="slide-right" appear tag="div" class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2" v-if="target?.tags?.length">
+                    <h1 key="heading" class="text-xl w-full">{{ config.lang === 'zh' ? '标签' : 'Tags' }}</h1>
+                    <div v-for="(tag, i) in target?.tags" :key="i" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: tag?.cite, confidence: tag?.confidence})}">
+                        <Chip>
+                            <div class="flex flex-row items-center justify-center gap-2">
+                                <span class="rounded-full pi pi-tag p-2" :style="`background-color: ${getCfdcColor(tag?.confidence ? tag.confidence : undefined)}`" ></span>
+                                <span class="font-medium" >{{ tag?.tag }}</span>
                             </div>
-                        </div>
+                        </Chip>
                     </div>
-                </Transition>
+                </TransitionGroup>
                 <Divider v-if="(target.tags && target.tags.length > 0) && ((target.charts && target.charts.length > 0) || (target.related && target.related.length > 0))" />
 
-                <Transition name="float-up" appear>
-                    <div v-if="target.charts && target.charts.length > 0" class="flex flex-col gap-2">
-                        <h1 class="text-xl">{{ config.lang === 'zh' ? '图表' : 'Charts' }}</h1>
-                        <Chart v-for="(chart, i) in target.charts" :key="i" :chart="chart" />
-                    </div>
-                </Transition>
+                <TransitionGroup name="slide-right" appear tag="div" class="flex flex-col gap-2" v-if="target?.charts?.length">
+                    <h1 key="heading" class="text-xl">{{ config.lang === 'zh' ? '图表' : 'Charts' }}</h1>
+                    <Chart v-for="(chart, i) in target?.charts" :key="i" :chart="chart" />
+                </TransitionGroup>
                 <Divider v-if="(target.charts && target.charts.length > 0) && ((target.related && target.related.length > 0))" />
 
-                <Transition name="slide-right" appear>
-                    <div v-if="target.related && target.related.length > 0" class="flex flex-col gap-2">
-                        <h1 class="text-xl">{{ config.lang === 'zh' ? '相关内容' : 'Related' }}</h1>
-                        <div class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2">
-                            <div v-for="(rel, i) in target.related" :key="i" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: rel.cite, confidence: rel.confidence})}">
-                                <Chip>
-                                    <div class="flex flex-row items-center justify-center gap-2">
-                                        <span class="rounded-full pi pi-link p-2" :style="`background-color: ${getCfdcColor(rel?.confidence ? rel.confidence : undefined)}`" ></span>
-                                        <span class="font-medium" >{{ rel?.name }}</span>
-                                    </div>
-                                </Chip>
+                <TransitionGroup name="slide-right" appear tag="div" class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2" v-if="target?.related?.length">
+                    <h1 key="heading" class="text-xl w-full">{{ config.lang === 'zh' ? '相关内容' : 'Related' }}</h1>
+                    <div v-for="(rel, i) in target?.related" :key="i" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: rel?.cite, confidence: rel?.confidence})}">
+                        <Chip>
+                            <div class="flex flex-row items-center justify-center gap-2">
+                                <span class="rounded-full pi pi-link p-2" :style="`background-color: ${getCfdcColor(rel?.confidence ? rel.confidence : undefined)}`" ></span>
+                                <span class="font-medium" >{{ rel?.name }}</span>
                             </div>
-                        </div>
+                        </Chip>
                     </div>
-                </Transition>
+                </TransitionGroup>
 
             </div>
             </template>
             <Popover ref="pop">
                 <div class="w-60 flex flex-col gap-3 overflow-y-auto max-h-[50vh]">
-                    <ProgressBar v-if="typeof active_pop.confidence === 'number'" class="w-full h-5 shrink-0" :value="active_pop.confidence">{{ config.lang === 'zh' ? '可信度：' : 'Confidence:' }}{{ active_pop.confidence }}</ProgressBar>
-                    <ClassicItem v-for="i in active_pop.cite" :item="status.toolResults[i]" />
+                    <ProgressBar v-if="typeof active_pop?.confidence === 'number'" class="w-full h-5 shrink-0" :value="active_pop?.confidence">{{ config.lang === 'zh' ? '可信度：' : 'Confidence:' }}{{ active_pop?.confidence }}</ProgressBar>
+                    <ClassicItem v-for="i in active_pop?.cite" :key="i" :item="status?.toolResults?.[i]" />
                 </div>
             </Popover>
         </AccordionContent>
@@ -160,9 +136,8 @@
 </template>
 
 <style scoped>
-    .float-up-enter-active, .slide-right-enter-active {
+    .float-up-enter-active, .slide-right-enter-active, .slide-right-move {
         transition: all 0.25s cubic-bezier(0.3, 0.35, 0, 1);
-        transition-delay: 0.15s;
     }
     .float-up-enter-from {
         opacity: 0;

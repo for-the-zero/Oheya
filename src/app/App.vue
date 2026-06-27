@@ -41,7 +41,10 @@
     const activeTargets = ref<string[]>([]);
     watch(() => status.value.resObj?.targets, (targets) => {
         if(targets){
-            activeTargets.value = targets.map((_, i: number) => `target-${i}`);
+            const newKeys = targets.map((_, i: number) => `target-${i}`);
+            if (activeTargets.value.length !== newKeys.length) {
+                activeTargets.value = newKeys;
+            };
         };
     }, { immediate: true, flush: 'post' });
 
@@ -73,7 +76,7 @@
         </Accordion>
         
         <TransitionGroup name="item-float" tag="div" class="w-full flex flex-col justify-center items-center gap-5">
-            <ClassicItem v-for="i in status.resObj?.classic" :key="i" :item="status.toolResults[i]" />
+            <ClassicItem v-for="i in status.resObj?.classic" :key="i" :item="status?.toolResults?.[i]" />
         </TransitionGroup>
     </div>
     <Toast />

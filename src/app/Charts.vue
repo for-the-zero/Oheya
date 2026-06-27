@@ -15,20 +15,20 @@
         'rgba(34, 197, 94, 0.8)',
     ];
 
-    const chartType = computed(() => chart.type || 'bar');
+    const chartType = computed(() => chart?.type || 'bar');
 
     const hasData = computed(() => {
-        if (chart.type === 'pie') {
-            return (chart.data || []).length > 0;
+        if (chart?.type === 'pie') {
+            return (chart?.data || []).length > 0;
         };
         return ((chart as { datasets?: { data?: number[] }[] }).datasets || []).some(ds => (ds.data || []).length > 0);
     });
 
     const chartData = computed(() => {
         const type = chartType.value;
-        const labels = chart.labels || [];
-        if (chart.type === 'pie') {
-            const data = chart.data || [];
+        const labels = chart?.labels || [];
+        if (chart?.type === 'pie') {
+            const data = chart?.data || [];
             return {
                 labels,
                 datasets: [{
@@ -55,7 +55,7 @@
 
     const chartOptions = computed(() => {
         const type = chartType.value;
-        const dsCount = chart.type === 'pie' ? 0 : ((chart as { datasets?: unknown[] }).datasets || []).length;
+        const dsCount = chart?.type === 'pie' ? 0 : ((chart as { datasets?: unknown[] }).datasets || []).length;
         return {
             responsive: true,
             maintainAspectRatio: false,
@@ -65,8 +65,8 @@
                     position: 'bottom',
                 },
                 title: {
-                    display: type !== 'pie' && !!chart.title,
-                    text: chart.title || '',
+                    display: type !== 'pie' && !!chart?.title,
+                    text: chart?.title || '',
                 },
             },
             scales: type !== 'pie' ? {
@@ -95,8 +95,8 @@
     <div class="w-full">
         <div v-if="hasData && chartType === 'pie'" class="flex w-full h-full gap-2">
             <div class="flex flex-col justify-center shrink-0 gap-2 pl-2" style="width: 120px;">
-                <span v-if="chart.title" class="text-sm font-bold leading-tight">{{ chart.title }}</span>
-                <div v-for="(label, i) in (chart.labels || [])" :key="i" class="flex items-center gap-2 text-xs">
+                <span v-if="chart?.title" class="text-sm font-bold leading-tight">{{ chart?.title }}</span>
+                <div v-for="(label, i) in (chart?.labels || [])" :key="i" class="flex items-center gap-2 text-xs">
                     <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: colorPalette[i % colorPalette.length] }"></span>
                     <span class="truncate">{{ label }}</span>
                 </div>
