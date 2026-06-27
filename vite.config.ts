@@ -7,13 +7,14 @@ import vueDevTools from 'vite-plugin-vue-devtools';
 export default defineConfig({
     root: 'src',
     base: './',
+    host: '0.0.0.0',
     build: {
         outDir: '../dist',
         emptyOutDir: true,
         assetsDir: '',
         rollupOptions: {
             onwarn(warning, warn) {
-                if ((warning as { code?: string }).code === 'INVALID_ANNOTATION') return;
+                if((warning as { code?: string }).code === 'INVALID_ANNOTATION'){return;};
                 warn(warning);
             },
             output: {

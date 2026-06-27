@@ -18,12 +18,14 @@ interface aistatus{
 interface config{
     lang: 'zh' | 'en';
     vibration: number;
+    autoScroll: boolean;
     corsMode: boolean;
     corsPrefix: string;
     baseUrl: string;
     key: string;
     model: string;
     temperature: number;
+    reasoning: 'provider-default' | 'none' | 'minimal' | 'low' | 'medium' | 'high' | 'xhigh'
     prompt: string;
     search: 'exa' | 'uapi' | 'tavily' | 'querit';
     content: 'exa' | 'tavily' | 'md.new';

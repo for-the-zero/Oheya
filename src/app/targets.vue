@@ -55,10 +55,10 @@
         <AccordionHeader>
             <div class="flex justify-between items-center w-full mr-4">
                 <div class="flex flex-col ">
-                    <span v-if="target?.name" class="text-2xl">{{ target.name }}</span>
-                    <span v-if="target?.category" class="text-sm">{{ target.category }}</span>
+                    <span v-if="target?.name" class="text-2xl">{{ target?.name }}</span>
+                    <span v-if="target?.category" class="text-sm">{{ target?.category }}</span>
                 </div>
-                <Knob v-if="target?.confidence && typeof target.confidence === 'number'" v-tooltip.top="config.lang === 'zh' ? '可信度' : 'Confidence'" :size="60" :min="0" :max="100" :modelValue="target.confidence" :valueColor="getCfdcColor(target.confidence)" readonly />
+                <Knob v-if="target?.confidence && typeof target.confidence === 'number'" v-tooltip.top="config.lang === 'zh' ? '可信度' : 'Confidence'" :size="60" :min="0" :max="100" :modelValue="target.confidence" :valueColor="getCfdcColor(target?.confidence ? target.confidence : undefined)" readonly />
             </div>
         </AccordionHeader>
         <AccordionContent>
@@ -76,7 +76,7 @@
                 <Transition name="slide-right" appear>
                     <div v-if="target.descriptions && target.descriptions.length > 0" class="flex flex-col gap-2">
                         <h1 class="text-xl">{{ config.lang === 'zh' ? '描述' : 'Descriptions' }}</h1>
-                        <span v-for="desc in target.descriptions" class="mr-4 underline underline-offset-3 decoration-2 cursor-pointer" :style="`text-decoration-color: ${getCfdcColor(desc.confidence)}`" @click="(e)=>{openPop(e,{cite: desc.cite, confidence: desc.confidence})}">" {{ desc.text }} "</span>
+                        <span v-for="(desc, i) in target.descriptions" :key="i" class="mr-4 underline underline-offset-3 decoration-2 cursor-pointer" :style="`text-decoration-color: ${getCfdcColor(desc?.confidence ? desc.confidence : undefined)}`" @click="(e)=>{openPop(e,{cite: desc.cite, confidence: desc.confidence})}">" {{ desc.text }} "</span>
                     </div>
                 </Transition>
                 <Divider v-if="((target.descriptions && target.descriptions.length > 0)) && ((target.attributes && target.attributes.length > 0) || (target.tags && target.tags.length > 0) || (target.charts && target.charts.length > 0) || (target.related && target.related.length > 0))" />
@@ -85,8 +85,8 @@
                     <div v-if="target.attributes && target.attributes.length > 0" class="flex flex-col gap-2">
                         <h1 class="text-xl">{{ config.lang === 'zh' ? '属性' : 'Attr' }}</h1>
                         <div class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2">
-                            <div v-for="attr in target.attributes" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: attr.cite, confidence: attr.confidence})}">
-                                <Chip>
+                            <div v-for="(attr, i) in target.attributes" :key="i" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: attr.cite, confidence: attr.confidence})}">
+                                <Chip v-if="attr">
                                     <div class="flex flex-row items-center justify-center gap-2">
                                         <Tag severity="contrast" :value="attr.akey ? attr.akey : ''"></Tag>
                                         <span class="font-medium" >{{ attr.avalue }}</span>
@@ -110,11 +110,11 @@
                     <div v-if="target.tags && target.tags.length > 0" class="flex flex-col gap-2">
                         <h1 class="text-xl">{{ config.lang === 'zh' ? '标签' : 'Tags' }}</h1>
                         <div class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2">
-                            <div v-for="tag in target.tags" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: tag.cite, confidence: tag.confidence})}">
+                            <div v-for="(tag, i) in target.tags" :key="i" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: tag.cite, confidence: tag.confidence})}">
                                 <Chip>
                                     <div class="flex flex-row items-center justify-center gap-2">
-                                        <span class="rounded-full pi pi-tag p-2" :style="`background-color: ${getCfdcColor(tag.confidence)}`" ></span>
-                                        <span class="font-medium" >{{ tag.tag }}</span>
+                                        <span class="rounded-full pi pi-tag p-2" :style="`background-color: ${getCfdcColor(tag?.confidence ? tag.confidence : undefined)}`" ></span>
+                                        <span class="font-medium" >{{ tag?.tag }}</span>
                                     </div>
                                 </Chip>
                             </div>
@@ -126,7 +126,7 @@
                 <Transition name="float-up" appear>
                     <div v-if="target.charts && target.charts.length > 0" class="flex flex-col gap-2">
                         <h1 class="text-xl">{{ config.lang === 'zh' ? '图表' : 'Charts' }}</h1>
-                        <Chart v-for="chart in target.charts" :chart="chart" />
+                        <Chart v-for="(chart, i) in target.charts" :key="i" :chart="chart" />
                     </div>
                 </Transition>
                 <Divider v-if="(target.charts && target.charts.length > 0) && ((target.related && target.related.length > 0))" />
@@ -135,11 +135,11 @@
                     <div v-if="target.related && target.related.length > 0" class="flex flex-col gap-2">
                         <h1 class="text-xl">{{ config.lang === 'zh' ? '相关内容' : 'Related' }}</h1>
                         <div class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2">
-                            <div v-for="rel in target.related" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: rel.cite, confidence: rel.confidence})}">
+                            <div v-for="(rel, i) in target.related" :key="i" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: rel.cite, confidence: rel.confidence})}">
                                 <Chip>
                                     <div class="flex flex-row items-center justify-center gap-2">
-                                        <span class="rounded-full pi pi-link p-2" :style="`background-color: ${getCfdcColor(rel.confidence)}`" ></span>
-                                        <span class="font-medium" >{{ rel.name }}</span>
+                                        <span class="rounded-full pi pi-link p-2" :style="`background-color: ${getCfdcColor(rel?.confidence ? rel.confidence : undefined)}`" ></span>
+                                        <span class="font-medium" >{{ rel?.name }}</span>
                                     </div>
                                 </Chip>
                             </div>

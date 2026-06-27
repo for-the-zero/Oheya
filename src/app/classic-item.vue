@@ -5,7 +5,7 @@
 </script>
 
 <template>
-    <a class="w-full" target="_blank" :href="item.url">
+    <a v-if="item && item.url && item.title" class="w-full" target="_blank" :href="item.url ? item.url : ''">
         <Card class="w-full hover:brightness-110 break-all **:data-[pc-section='body']:p-3! **:data-[pc-section='caption']:gap-0!">
             <template #title>
                 <div class="flex flex-col">

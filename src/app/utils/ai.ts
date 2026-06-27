@@ -1,7 +1,7 @@
-import { createOpenAI } from '@ai-sdk/openai';
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible';
 import { streamText, isLoopFinished } from 'ai';
 import yaml from 'js-yaml';
+import { getCurrentInstance } from 'vue'
 
 import { useGlobalRefStore, getToast } from './globalRef';
 import { searchTool, getFullTextTool } from './tools';
@@ -14,12 +14,11 @@ export async function requestAI(kw: string){
     status.response = '';
     status.resObj = {};
     status.toolResults = [];
+    _lastYamlText = '';
+    _pendingParsed = null;
+    if(_throttleTimer){clearTimeout(_throttleTimer); _throttleTimer = null;};
     try{
         const result = streamText({
-            // model: createOpenAI({
-            //     baseURL: `${config.corsMode ? config.corsPrefix : ''}${config.baseUrl}`,
-            //     apiKey: config.key
-            // })(config.model),
             model: createOpenAICompatible({
                 name: 'API',
                 baseURL: `${config.corsMode ? config.corsPrefix : ''}${config.baseUrl}`,
@@ -28,6 +27,7 @@ export async function requestAI(kw: string){
             instructions: config.prompt,
             prompt: kw,
             temperature: config.temperature,
+            reasoning: config.reasoning,
             tools: {
                 search: searchTool,
                 getFullText: getFullTextTool
@@ -60,10 +60,11 @@ export async function requestAI(kw: string){
                 case 'finish':
                     isFinished = true;
             };
-            parseContent();
+            parseContent(isFinished);
             if(isFinished){
                 status.isGenerating = false;
                 console.log(status);
+                getCurrentInstance()?.proxy?.$forceUpdate();
                 break;
             };
         };
@@ -79,21 +80,61 @@ export async function requestAI(kw: string){
         });
         status.isGenerating = false;
     };
+    _lastYamlText = '';
 };
 
 const isEmpty = (v:any) => v == null || (typeof v === 'object' && !Object.keys(v).length) || (typeof v === 'string' && !v.trim());
-function parseContent(){
+
+function deepMerge(target: any, source: any){
+    for(const key of Object.keys(source)){
+        const sv = source[key];
+        const tv = target[key];
+        if(sv && typeof sv === 'object' && !Array.isArray(sv) && tv && typeof tv === 'object' && !Array.isArray(tv)){
+            deepMerge(tv, sv);
+        }else{
+            target[key] = sv;
+        };
+    };
+};
+
+let _lastYamlText = '';
+let _pendingParsed: aistatus['resObj'] | null = null;
+let _throttleTimer: ReturnType<typeof setTimeout> | null = null;
+
+function flushParsed(){
+    if(!_pendingParsed){return;};
+    const { status } = useGlobalRefStore();
+    if(status.resObj){
+        deepMerge(status.resObj, _pendingParsed);
+    }else{
+        status.resObj = _pendingParsed;
+    };
+    status.isGenResult = true;
+    _pendingParsed = null;
+};
+
+const THROTTLE_MS = 150;
+function parseContent(flush = false){
     const { status } = useGlobalRefStore();
     if(!status.response){return;};
-    let marker = '<--YAML START-->';
-    let markerIndex = status.response.indexOf(marker);
+    const marker = '<--YAML START-->';
+    const markerIndex = status.response.indexOf(marker);
     if(markerIndex === -1){return;};
-    // status.isGenResult = true;
-    let yamlContent = status.response.slice(markerIndex + marker.length);
+    const yamlContent = status.response.slice(markerIndex + marker.length);
+    if(yamlContent === _lastYamlText){return;};
+    _lastYamlText = yamlContent;
     try {
-        status.resObj = yaml.load(yamlContent) as aistatus['resObj'];
-        if(!isEmpty(status.resObj)){
-            status.isGenResult = true;
+        const parsed = yaml.load(yamlContent) as aistatus['resObj'];
+        if(isEmpty(parsed)){return;};
+        _pendingParsed = parsed;
+        if(flush){
+            if(_throttleTimer){clearTimeout(_throttleTimer); _throttleTimer = null;};
+            flushParsed();
+        }else if(!_throttleTimer){
+            _throttleTimer = setTimeout(() => {
+                _throttleTimer = null;
+                flushParsed();
+            }, THROTTLE_MS);
         };
     } catch (e) {
         return;

@@ -35,12 +35,14 @@
     const visible = ref(false);
     const editing_lang = ref(config.value.lang);
     const editing_vibra = ref(config.value.vibration);
+    const editing_autoscroll = ref(config.value.autoScroll);
     const editing_corsm = ref(config.value.corsMode);
     const editing_corsp = ref(config.value.corsPrefix);
     const editing_base = ref(config.value.baseUrl);
     const editing_key = ref(config.value.key);
     const editing_model = ref(config.value.model);
     const editing_temp = ref(config.value.temperature);
+    const editing_reasoning = ref(config.value.reasoning);
     const editing_prompt = ref(config.value.prompt);
     const editing_search = ref(config.value.search);
     const editing_content = ref(config.value.content);
@@ -51,7 +53,7 @@
     const import_config = ref('');
     const import_config_valid = ref(false);
 
-    const configSchema = z.object({ lang: z.enum(['zh', 'en']), vibration: z.number(), corsMode: z.boolean(), corsPrefix: z.string(), baseUrl: z.string(), key: z.string(), model: z.string(), temperature: z.number(), prompt: z.string(), search: z.enum(['exa', 'uapi', 'tavily', 'querit']), content: z.enum(['exa', 'tavily', 'md.new']), toolsKeys: z.object({ exa: z.string(), uapi: z.string(), tavily: z.string(), querit: z.string() }) });
+    const configSchema = z.object({ lang: z.enum(['zh', 'en']), vibration: z.number(), autoScroll: z.boolean(), corsMode: z.boolean(), corsPrefix: z.string(), baseUrl: z.string(), key: z.string(), model: z.string(), temperature: z.number(), reasoning: z.enum(['provider-default', 'none', 'minimal', 'low', 'medium', 'high', 'xhigh']), prompt: z.string(), search: z.enum(['exa', 'uapi', 'tavily', 'querit']), content: z.enum(['exa', 'tavily', 'md.new']), toolsKeys: z.object({ exa: z.string(), uapi: z.string(), tavily: z.string(), querit: z.string() }) });
     watch(import_config, (v)=>{
         if(!v){
             import_config_valid.value = false;
@@ -70,7 +72,7 @@
     function importConfig(){
         try{
             const json = configSchema.parse(JSON.parse(import_config.value));
-            editing_lang.value = json.lang; editing_vibra.value = json.vibration; editing_corsm.value = json.corsMode; editing_corsp.value = json.corsPrefix; editing_base.value = json.baseUrl; editing_key.value = json.key; editing_model.value = json.model; editing_temp.value = json.temperature; editing_prompt.value = json.prompt; editing_search.value = json.search; editing_content.value = json.content; editing_ta_exa.value = json.toolsKeys.exa; editing_ta_uapi.value = json.toolsKeys.uapi; editing_ta_tavily.value = json.toolsKeys.tavily; editing_ta_querit.value = json.toolsKeys.querit;
+            editing_lang.value = json.lang; editing_vibra.value = json.vibration; editing_autoscroll.value = json.autoScroll; editing_corsm.value = json.corsMode; editing_corsp.value = json.corsPrefix; editing_base.value = json.baseUrl; editing_key.value = json.key; editing_model.value = json.model; editing_temp.value = json.temperature; editing_reasoning.value = json.reasoning; editing_prompt.value = json.prompt; editing_search.value = json.search; editing_content.value = json.content; editing_ta_exa.value = json.toolsKeys.exa; editing_ta_uapi.value = json.toolsKeys.uapi; editing_ta_tavily.value = json.toolsKeys.tavily; editing_ta_querit.value = json.toolsKeys.querit;
         }catch(e){
             import_config_valid.value = false;
         };
@@ -93,12 +95,12 @@
             toast.add({severity: 'warn', life: 2500, summary: config.value.lang === 'zh' ? '还有没填的东西……' : 'Missing required fields', detail: config.value.lang === 'zh' ? '请填写 Querit API Key' : 'Please fill in the Querit API Key', closable: true});
             need_notice = true;
         };
-        config.value.lang = editing_lang.value; config.value.vibration = editing_vibra.value; config.value.corsMode = editing_corsm.value; config.value.corsPrefix = editing_corsp.value; config.value.baseUrl = editing_base.value; config.value.key = editing_key.value; config.value.model = editing_model.value; config.value.temperature = editing_temp.value; config.value.prompt = editing_prompt.value; config.value.search = editing_search.value; config.value.content = editing_content.value; config.value.toolsKeys.exa = editing_ta_exa.value; config.value.toolsKeys.uapi = editing_ta_uapi.value; config.value.toolsKeys.tavily = editing_ta_tavily.value; config.value.toolsKeys.querit = editing_ta_querit.value; visible.value = false;
+        config.value.lang = editing_lang.value; config.value.vibration = editing_vibra.value; config.value.autoScroll = editing_autoscroll.value; config.value.corsMode = editing_corsm.value; config.value.corsPrefix = editing_corsp.value; config.value.baseUrl = editing_base.value; config.value.key = editing_key.value; config.value.model = editing_model.value; config.value.temperature = editing_temp.value; config.value.reasoning = editing_reasoning.value; config.value.prompt = editing_prompt.value; config.value.search = editing_search.value; config.value.content = editing_content.value; config.value.toolsKeys.exa = editing_ta_exa.value; config.value.toolsKeys.uapi = editing_ta_uapi.value; config.value.toolsKeys.tavily = editing_ta_tavily.value; config.value.toolsKeys.querit = editing_ta_querit.value; visible.value = false;
         let notice = need_notice ? {detail: config.value.lang === 'zh' ? '但是配置项并不完整，可能会有问题' : 'But the configuration is not complete, there may be problems'} : {};
         toast.add({severity: 'success', life: 2500, summary: config.value.lang === 'zh' ? '保存成功' : 'Saved', closable: true, ...notice});
     };
-    function restore(){ editing_lang.value = config.value.lang; editing_vibra.value = config.value.vibration; editing_corsm.value = config.value.corsMode; editing_corsp.value = config.value.corsPrefix; editing_base.value = config.value.baseUrl; editing_key.value = config.value.key; editing_model.value = config.value.model; editing_temp.value = config.value.temperature; editing_prompt.value = config.value.prompt; editing_search.value = config.value.search; editing_content.value = config.value.content; editing_ta_exa.value = config.value.toolsKeys.exa; editing_ta_uapi.value = config.value.toolsKeys.uapi; editing_ta_tavily.value = config.value.toolsKeys.tavily; editing_ta_querit.value = config.value.toolsKeys.querit; };
-    function resetDefault(){ editing_lang.value = defaultConfig.lang as "zh" | "en"; editing_vibra.value = defaultConfig.vibration; editing_corsm.value = defaultConfig.corsMode; editing_corsp.value = defaultConfig.corsPrefix; editing_base.value = defaultConfig.baseUrl; editing_key.value = defaultConfig.key; editing_model.value = defaultConfig.model; editing_temp.value = defaultConfig.temperature; editing_prompt.value = defaultConfig.prompt; editing_search.value = defaultConfig.search as "uapi" | "exa" | "tavily" | "querit" || 'uapi'; editing_content.value = defaultConfig.content as "md.new" | "exa" | "tavily" || 'md.new'; editing_ta_exa.value = defaultConfig.toolsKeys.exa; editing_ta_uapi.value = defaultConfig.toolsKeys.uapi; editing_ta_tavily.value = defaultConfig.toolsKeys.tavily; editing_ta_querit.value = defaultConfig.toolsKeys.querit; };
+    function restore(){ editing_lang.value = config.value.lang; editing_vibra.value = config.value.vibration; editing_autoscroll.value = config.value.autoScroll; editing_corsm.value = config.value.corsMode; editing_corsp.value = config.value.corsPrefix; editing_base.value = config.value.baseUrl; editing_key.value = config.value.key; editing_model.value = config.value.model; editing_temp.value = config.value.temperature; editing_reasoning.value = config.value.reasoning; editing_prompt.value = config.value.prompt; editing_search.value = config.value.search; editing_content.value = config.value.content; editing_ta_exa.value = config.value.toolsKeys.exa; editing_ta_uapi.value = config.value.toolsKeys.uapi; editing_ta_tavily.value = config.value.toolsKeys.tavily; editing_ta_querit.value = config.value.toolsKeys.querit; };
+    function resetDefault(){ editing_lang.value = defaultConfig.lang as "zh" | "en"; editing_vibra.value = defaultConfig.vibration; editing_autoscroll.value = defaultConfig.autoScroll; editing_corsm.value = defaultConfig.corsMode; editing_corsp.value = defaultConfig.corsPrefix; editing_base.value = defaultConfig.baseUrl; editing_key.value = defaultConfig.key; editing_model.value = defaultConfig.model; editing_temp.value = defaultConfig.temperature; editing_reasoning.value = defaultConfig.reasoning as "provider-default" | "none" | "minimal" | "low" | "medium" | "high" | "xhigh"; editing_prompt.value = defaultConfig.prompt; editing_search.value = defaultConfig.search as "uapi" | "exa" | "tavily" | "querit" || 'uapi'; editing_content.value = defaultConfig.content as "md.new" | "exa" | "tavily" || 'md.new'; editing_ta_exa.value = defaultConfig.toolsKeys.exa; editing_ta_uapi.value = defaultConfig.toolsKeys.uapi; editing_ta_tavily.value = defaultConfig.toolsKeys.tavily; editing_ta_querit.value = defaultConfig.toolsKeys.querit; };
 </script>
 
 <template>
@@ -125,6 +127,8 @@
                         <Slider v-model="editing_vibra" :step="5" :min="0" :max="60" class="flex-1" />
                         <div class="text-sm shrink-0 whitespace-nowrap">{{ editing_vibra }} ms</div>
                     </div>
+                    <h1 class="text-xl">{{ config.lang === 'zh' ? '自动滚动' : 'Auto Scroll' }}</h1>
+                    <ToggleSwitch v-model="editing_autoscroll" />
                     <h1 class="text-xl">CORS Proxy</h1>
                     <p class="text-sm">{{ config.lang === 'zh' 
                         ? '这里提供的大部分第三方api都要依赖CORS Proxy才能运作，而且你配置的LLM可能也需要借助CORS Proxy，否则会请求失败' 
@@ -170,6 +174,10 @@
                     <div class="flex flex-row items-center justify-center w-full gap-4">
                         <div class="shrink-0 whitespace-nowrap">Temperature: {{ editing_temp.toFixed(2) }}</div>
                         <Slider v-model="editing_temp" :step="0.05" :min="0" :max="1" class="flex-1" />
+                    </div>
+                    <div class="flex flex-row items-center justify-center w-full gap-4">
+                        <div class="shrink-0 whitespace-nowrap">{{ config.lang === 'zh' ? '推理' : 'Reasoning' }}</div>
+                        <Select fluid v-model="editing_reasoning" :options="[{v:'provider-default'},{v:'none'},{v:'minimal'},{v:'low'},{v:'medium'},{v:'high'},{v:'xhigh'}]" optionLabel="v" optionValue="v" checkmark size="small" />
                     </div>
                     <Divider />
                     <h1 class="text-xl">{{ config.lang === 'zh' ? '系统提示词' : 'System Prompts' }}</h1>

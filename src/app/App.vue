@@ -32,12 +32,18 @@
             };
         });
     });
+    watch([()=>status.value.resObj, ()=>status.value.isGenerating, ()=>status.value.response], ()=>{
+        if(!config.value.autoScroll){return;};
+        nextTick(()=>{
+            window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+        });
+    }, { deep: true });
     const activeTargets = ref<string[]>([]);
     watch(() => status.value.resObj?.targets, (targets) => {
         if(targets){
             activeTargets.value = targets.map((_, i: number) => `target-${i}`);
         };
-    }, { immediate: true });
+    }, { immediate: true, flush: 'post' });
 
     function searchPressed(){
         if(searchbox.value){
@@ -51,7 +57,7 @@
     <div class="flex flex-col justify-center items-center p-6 gap-5 mx-auto w-[90vw] sm:w-[65vw]">
         <Title />
         <InputGroup>
-            <InputText :placeholder="config.lang === 'zh' ? '输入你想要了解的事物吧~' : 'Type What You Want to Know'" v-model="searchbox" />
+            <InputText :placeholder="config.lang === 'zh' ? '输入你想要了解的事物吧~' : 'Type What You Want to Know'" v-model="searchbox" @keydown="(e)=>{if(e.key==='Enter'){searchPressed()}}" />
             <InputGroupAddon>
                 <ProgressSpinner v-if="status.isGenerating" class="h-6! w-6!" />
                 <Button v-else icon="pi pi-search" :disabled="!searchbox" @click="searchPressed" />
@@ -63,7 +69,7 @@
         </div>
 
         <Accordion class="w-full" v-model:value="activeTargets" multiple>
-            <Targets v-for="target, i in status.resObj?.targets" :id="`target-${i}`" :target="target" :active="activeTargets.includes(`target-${i}`)" />
+            <Targets v-for="target, i in status.resObj?.targets" :id="`target-${i}`" :key="`target-${i}`" :target="target" :active="activeTargets.includes(`target-${i}`)" />
         </Accordion>
         
         <TransitionGroup name="item-float" tag="div" class="w-full flex flex-col justify-center items-center gap-5">
