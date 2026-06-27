@@ -5,11 +5,10 @@ import { VitePWA } from 'vite-plugin-pwa';
 import vueDevTools from 'vite-plugin-vue-devtools';
 
 export default defineConfig({
-    root: 'src',
     base: './',
     host: '0.0.0.0',
     build: {
-        outDir: '../dist',
+        outDir: 'dist',
         emptyOutDir: true,
         assetsDir: '',
         rollupOptions: {

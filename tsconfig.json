@@ -16,6 +16,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.vue", "src/vite-env.d.ts"],
-  "exclude": ["dist", "node_modules", "src/dev-dist"]
+  "include": ["src/**/*.ts", "src/**/*.vue", "*.ts", "vite-env.d.ts"],
+  "exclude": ["dist", "node_modules", "dev-dist"]
 }
