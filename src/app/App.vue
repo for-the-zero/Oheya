@@ -4,6 +4,7 @@
     import InputGroupAddon from 'primevue/inputgroupaddon';
     import Button from 'primevue/button';
     import Accordion from 'primevue/accordion';
+    import ProgressSpinner from 'primevue/progressspinner';
 
     import { ref, watch, nextTick, type VNodeRef } from 'vue';
     import { useElementSize } from '@vueuse/core';
@@ -13,10 +14,13 @@
     import ClassicItem from './classic-item.vue';
     import Targets from './targets.vue';
     
-    import { useGlobalRefStore } from './utils/globalRef';
+    import { useToast } from 'primevue/usetoast';
+    import { requestAI } from './utils/ai';
+    import { useGlobalRefStore, setToast } from './utils/globalRef';
     import { storeToRefs } from 'pinia';
     const globalRef = useGlobalRefStore();
     const { status, config } = storeToRefs(globalRef);
+    setToast(useToast());
 
     const searchbox = ref('');
     const genContentDiv = ref<VNodeRef | null>(null);
@@ -34,6 +38,12 @@
             activeTargets.value = targets.map((_, i: number) => `target-${i}`);
         };
     }, { immediate: true });
+
+    function searchPressed(){
+        if(searchbox.value){
+            requestAI(searchbox.value);
+        };
+    };
 </script>
 
 <template>
@@ -43,7 +53,8 @@
         <InputGroup>
             <InputText :placeholder="config.lang === 'zh' ? '输入你想要了解的事物吧~' : 'Type What You Want to Know'" v-model="searchbox" />
             <InputGroupAddon>
-                <Button icon="pi pi-search" :disabled="!searchbox || status.isGenerating" severity="" />
+                <ProgressSpinner v-if="status.isGenerating" class="h-6! w-6!" />
+                <Button v-else icon="pi pi-search" :disabled="!searchbox" @click="searchPressed" />
             </InputGroupAddon>
         </InputGroup>
         <div v-if="status.isGenerating && !status.isGenResult" ref="genContentDiv" class="max-h-[50vh] max-w-full break-all overflow-y-hidden text-gray-500 scrollbar-none scroll-smooth whitespace-pre-wrap" >
@@ -62,7 +73,7 @@
     <Toast />
 </template>
 
-<style scope>
+<style scoped>
     .item-float-enter-active {
         transition: all 0.25s cubic-bezier(0.3, 0.35, 0, 1);
     }

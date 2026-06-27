@@ -8,6 +8,7 @@
     import ProgressBar from 'primevue/progressbar';
     import Fieldset from 'primevue/fieldset';    
     import Chip from 'primevue/chip';
+    import Tag from 'primevue/tag';
 
     import ClassicItem from './classic-item.vue';
     import Chart from './Charts.vue';
@@ -50,14 +51,14 @@
 </script>
 
 <template>
-    <AccordionPanel :value="id">
+    <AccordionPanel :value="id" v-if="target">
         <AccordionHeader>
             <div class="flex justify-between items-center w-full mr-4">
                 <div class="flex flex-col ">
-                    <span class="text-2xl">{{ target.name }}</span>
-                    <span class="text-sm">{{ target.category }}</span>
+                    <span v-if="target?.name" class="text-2xl">{{ target.name }}</span>
+                    <span v-if="target?.category" class="text-sm">{{ target.category }}</span>
                 </div>
-                <Knob v-if="typeof target.confidence === 'number'" v-tooltip.top="config.lang === 'zh' ? '可信度' : 'Confidence'" :size="60" :min="0" :max="100" :modelValue="target.confidence" :valueColor="getCfdcColor(target.confidence)" readonly />
+                <Knob v-if="target?.confidence && typeof target.confidence === 'number'" v-tooltip.top="config.lang === 'zh' ? '可信度' : 'Confidence'" :size="60" :min="0" :max="100" :modelValue="target.confidence" :valueColor="getCfdcColor(target.confidence)" readonly />
             </div>
         </AccordionHeader>
         <AccordionContent>
@@ -70,40 +71,46 @@
                         <p>{{ target.brief }}</p>
                     </div>
                 </Transition>
-                <Divider v-if="target.brief" />
+                <Divider v-if="(target.brief) && ((target.descriptions && target.descriptions.length > 0) || (target.attributes && target.attributes.length > 0) || (target.tags && target.tags.length > 0) || (target.charts && target.charts.length > 0) || (target.related && target.related.length > 0))" />
 
                 <Transition name="slide-right" appear>
                     <div v-if="target.descriptions && target.descriptions.length > 0" class="flex flex-col gap-2">
                         <h1 class="text-xl">{{ config.lang === 'zh' ? '描述' : 'Descriptions' }}</h1>
-                        <div>
-                            <span v-for="desc in target.descriptions" class="mr-4 underline underline-offset-3 decoration-2 cursor-pointer" :style="`text-decoration-color: ${getCfdcColor(desc.confidence)}`" @click="(e)=>{openPop(e,{cite: desc.cite, confidence: desc.confidence})}">" {{ desc.text }} "</span>
-                        </div>
+                        <span v-for="desc in target.descriptions" class="mr-4 underline underline-offset-3 decoration-2 cursor-pointer" :style="`text-decoration-color: ${getCfdcColor(desc.confidence)}`" @click="(e)=>{openPop(e,{cite: desc.cite, confidence: desc.confidence})}">" {{ desc.text }} "</span>
                     </div>
                 </Transition>
-                <Divider v-if="target.descriptions && target.descriptions.length > 0" />
+                <Divider v-if="((target.descriptions && target.descriptions.length > 0)) && ((target.attributes && target.attributes.length > 0) || (target.tags && target.tags.length > 0) || (target.charts && target.charts.length > 0) || (target.related && target.related.length > 0))" />
 
                 <Transition name="slide-right" appear>
                     <div v-if="target.attributes && target.attributes.length > 0" class="flex flex-col gap-2">
                         <h1 class="text-xl">{{ config.lang === 'zh' ? '属性' : 'Attr' }}</h1>
-                        <div>
-                            <span v-for="attr in target.attributes" class="mr-4 **:data-[pc-section='root']:p-2! cursor-pointer" @click="(e)=>{openPop(e,{cite: attr.cite, confidence: attr.confidence})}">
+                        <div class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2">
+                            <div v-for="attr in target.attributes" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: attr.cite, confidence: attr.confidence})}">
+                                <Chip>
+                                    <div class="flex flex-row items-center justify-center gap-2">
+                                        <Tag severity="contrast" :value="attr.akey ? attr.akey : ''"></Tag>
+                                        <span class="font-medium" >{{ attr.avalue }}</span>
+                                    </div>
+                                </Chip>
+                            </div>
+                            <!-- <span v-for="attr in target.attributes" class="mr-4 **:data-[pc-section='root']:p-2! cursor-pointer" @click="(e)=>{openPop(e,{cite: attr.cite, confidence: attr.confidence})}">
                                 <Fieldset class="inline-block" :pt="{legend: {style: `padding: 2px;border: none;`}, content: {style: `transform: translateY(-5px);color: ${getCfdcColor(attr.confidence)}`}}">
                                     <template #legend>
                                         <span class="text-xs">{{ attr.akey }}</span>
                                     </template>
                                     <span class="text-sm font-bold">{{ attr.avalue }}</span>
                                 </Fieldset>
-                            </span>
+                            </span> -->
                         </div>
                     </div>
                 </Transition>
-                <Divider v-if="target.attributes && target.attributes.length > 0" />
+                <Divider v-if="((target.attributes && target.attributes.length > 0)) && ((target.tags && target.tags.length > 0) || (target.charts && target.charts.length > 0) || (target.related && target.related.length > 0))" />
 
                 <Transition name="slide-right" appear>
                     <div v-if="target.tags && target.tags.length > 0" class="flex flex-col gap-2">
                         <h1 class="text-xl">{{ config.lang === 'zh' ? '标签' : 'Tags' }}</h1>
-                        <div>
-                            <div v-for="tag in target.tags" class="inline mr-4 cursor-pointer" @click="(e)=>{openPop(e,{cite: tag.cite, confidence: tag.confidence})}">
+                        <div class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2">
+                            <div v-for="tag in target.tags" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: tag.cite, confidence: tag.confidence})}">
                                 <Chip>
                                     <div class="flex flex-row items-center justify-center gap-2">
                                         <span class="rounded-full pi pi-tag p-2" :style="`background-color: ${getCfdcColor(tag.confidence)}`" ></span>
@@ -114,7 +121,7 @@
                         </div>
                     </div>
                 </Transition>
-                <Divider v-if="target.tags && target.tags.length > 0" />
+                <Divider v-if="(target.tags && target.tags.length > 0) && ((target.charts && target.charts.length > 0) || (target.related && target.related.length > 0))" />
 
                 <Transition name="float-up" appear>
                     <div v-if="target.charts && target.charts.length > 0" class="flex flex-col gap-2">
@@ -122,13 +129,13 @@
                         <Chart v-for="chart in target.charts" :chart="chart" />
                     </div>
                 </Transition>
-                <Divider v-if="target.charts && target.charts.length > 0" />
+                <Divider v-if="(target.charts && target.charts.length > 0) && ((target.related && target.related.length > 0))" />
 
                 <Transition name="slide-right" appear>
                     <div v-if="target.related && target.related.length > 0" class="flex flex-col gap-2">
                         <h1 class="text-xl">{{ config.lang === 'zh' ? '相关内容' : 'Related' }}</h1>
-                        <div>
-                            <div v-for="rel in target.related" class="inline mr-4 cursor-pointer" @click="(e)=>{openPop(e,{cite: rel.cite, confidence: rel.confidence})}">
+                        <div class="flex flex-row justify-start items-start flex-wrap gap-x-4 gap-y-2">
+                            <div v-for="rel in target.related" class="inline cursor-pointer" @click="(e)=>{openPop(e,{cite: rel.cite, confidence: rel.confidence})}">
                                 <Chip>
                                     <div class="flex flex-row items-center justify-center gap-2">
                                         <span class="rounded-full pi pi-link p-2" :style="`background-color: ${getCfdcColor(rel.confidence)}`" ></span>

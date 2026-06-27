@@ -6,7 +6,6 @@ interface aistatus{
     isGenResult: boolean;
     isToolCalling: false | 'search' | 'fetch';
     response?: string;
-    resYaml?: string;
     resObj?: result;
     toolResults: {
         title: string;
