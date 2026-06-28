@@ -197,6 +197,16 @@ export const searchTool = tool({
     },
 });
 
+export const getTimeTool = tool({
+    description: 'Get the current date and time.',
+    inputSchema: z.object({}),
+    execute: async () => {
+        let date = new Date().toDateString();
+        console.log(date);
+        return date;
+    },
+});
+
 export const getFullTextTool = tool({
     description: 'Fetch full text content of web pages. Use url for direct URLs or id to reference existing search results by their index in toolResults.',
     inputSchema: z.object({

@@ -4,7 +4,7 @@ import yaml from 'js-yaml';
 // import { getCurrentInstance } from 'vue'
 
 import { useGlobalRefStore, getToast } from './globalRef';
-import { searchTool, getFullTextTool } from './tools';
+import { searchTool, getFullTextTool, getTimeTool } from './tools';
 
 export async function requestAI(kw: string){
     const { status, config } = useGlobalRefStore();
@@ -30,7 +30,8 @@ export async function requestAI(kw: string){
             reasoning: config.reasoning,
             tools: {
                 search: searchTool,
-                getFullText: getFullTextTool
+                getFullText: getFullTextTool,
+                getTime: getTimeTool,
             },
             stopWhen: isLoopFinished(),
         });
@@ -114,7 +115,7 @@ function flushParsed(){
 };
 
 // const THROTTLE_MS = 250;
-const THROTTLE_MS = 100;
+const THROTTLE_MS = 25;
 function parseContent(flush = false){
     const { status } = useGlobalRefStore();
     if(!status.response){return;};
